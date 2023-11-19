@@ -1,0 +1,24 @@
+from django.db import models
+from django.contrib.auth.models import User  # Assuming you're using Django's built-in User model
+from .models import Post  # Assuming you have a Post model defined
+
+class UserPostReaction(models.Model):
+    REACTION_CHOICES = (
+        ('LIKE', 'Like'),
+        ('LOVE', 'Love'),
+        ('HAHA', 'Haha'),
+        ('WOW', 'Wow'),
+        ('SAD', 'Sad'),
+        ('ANGRY', 'Angry'),
+    )
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    reaction = models.CharField(max_length=5, choices=REACTION_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'post')  # To ensure a user can react to a post only once
+
+    def __str__(self):
+        return f"{self.user.username} reacted {self.get_reaction_display()} to post {self.post.id}"

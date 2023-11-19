@@ -1,0 +1,7 @@
+{% if data %}
+    {% for key, value in data.items %}
+        <p><strong>{{ key }} </strong>: {{ value }}</p>
+    {% endfor %}
+{% else %}
+    <p>The dictionary is empty or doesn't exist.</p>
+{% endif %}
