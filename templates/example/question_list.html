@@ -1,0 +1,17 @@
+{% extends "example/base.html" %}
+
+{% block content %}
+<ul> 
+	{% for object in object_list %} 
+	<!-- Display Objects -->
+	<li>{{ object.question }}</li> 
+	<li><i>{{ object.pub_date }}</i></li> 
+
+	<hr/> 
+	<!-- If object_list is empty -->
+	{% empty %} 
+	<li>No questions yet.</li> 
+	{% endfor %} 
+</ul>
+
+{% endblock %}

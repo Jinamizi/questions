@@ -10,6 +10,7 @@ from django.utils.translation import gettext, gettext_lazy as _
 #TODO add polls
 #TODO add hints
 #TODO add feedback using mail
+#FIXME move to GenericForeignKey later
 #FIXME use django authentication 
 
 
@@ -53,9 +54,10 @@ class Comment(models.Model):
     last_edit = models.DateTimeField(auto_now=True, editable=False)
 
     reaction = GenericRelation('Reaction', related_query_name='reaction')
+    child_comment = GenericRelation('self', related_query_name='child_comments') 
 
     # Self-referential relationship for comments on comments
-    parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, related_name='child_comments', null=True, blank=True)
+    #parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, related_name='child_comments', null=True, blank=True)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
