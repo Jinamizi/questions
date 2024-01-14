@@ -12,17 +12,19 @@ from django.utils.translation import gettext, gettext_lazy as _
 #TODO add feedback using mail
 #FIXME move to GenericForeignKey later
 #FIXME use django authentication 
+#FIXME use a base class for Question and Comment: https://www.youtube.com/shorts/wNjtGky2nys
+#FIXME if user deletes account, ask if he wants to delete question. use on_delete=models.SET_NULL, and set null=True
 
 
 class Question(models.Model):
-    #FIXME if user deletes account, ask if he wants to delete question. use on_delete=models.SET_NULL, and set null=True
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='questions') 
     question = models.TextField()
     pub_date = models.DateTimeField(auto_now_add=True, editable=False)
     last_edit = models.DateTimeField(auto_now=True, editable=False)
 
-    comment = GenericRelation('Comment', related_query_name='comment')
-    reaction = GenericRelation('Reaction', related_query_name='reaction')
+    #comment = GenericRelation('Comment', related_query_name='comment')
+    reaction = GenericRelation('Reaction', related_query_name='reactions')
 
     class Meta:
         ordering = ["-pub_date"]
@@ -49,19 +51,20 @@ class Choice(models.Model):
 #COMPLETE add ability to add comments to comments
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments') #person who commented
+    question = models.ForeignKey(Question, on_delete= models.CASCADE, related_name='comments')
     comment = models.TextField()
     pub_date = models.DateTimeField(auto_now_add=True, editable=False)
     last_edit = models.DateTimeField(auto_now=True, editable=False)
 
-    reaction = GenericRelation('Reaction', related_query_name='reaction')
-    child_comment = GenericRelation('self', related_query_name='child_comments') 
+    reaction = GenericRelation('Reaction', related_query_name='comment')
+    # child_comment = GenericRelation('self', related_query_name='child_comments') 
 
-    # Self-referential relationship for comments on comments
-    #parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, related_name='child_comments', null=True, blank=True)
+    # # Self-referential relationship for comments on comments
+    # #parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, related_name='child_comments', null=True, blank=True)
 
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey()
+    # content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    # object_id = models.PositiveIntegerField()
+    # content_object = GenericForeignKey()
 
     class Meta:
         ordering = ["-pub_date"]

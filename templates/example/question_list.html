@@ -1,17 +1,52 @@
-{% extends "example/base.html" %}
+{% extends "example/base.html" %} {% block content %}
+<div class="container-lg mt-2 text-center">
+  {% for question in question_list %}
+  <div
+    class="d-flex flex-column border border-1 p-1 mb-2 bg-body-secondary text-start"
+  >
+    <div class="px-1">
+        <span class="fw-semibold fs-6">{{ question.user.username }}</span> @
+        <span class="text-muted fs-6">{{ question.pub_date }}</span>
+    </div>
+    <div class="p-1">{{ question }}</div>
 
-{% block content %}
-<ul> 
-	{% for object in object_list %} 
-	<!-- Display Objects -->
-	<li>{{ object.question }}</li> 
-	<li><i>{{ object.pub_date }}</i></li> 
+    <div class="">
+      {% comment %} todo add a form for this radio buttons {% endcomment %}
+      {% for choice in question.choices.all %}
+        <div class="form-check"> 
+          <input class="form-check-input" type="radio" name="choice" value="{{ choice.id }}" id="{{ choice.id }}">
+          <label class="form-check-label" for="{{ choice.id }}">
+            {{ choice }}
+          </label>
+        </div>
+      {% empty %}
+        <p class="text-muted ">No choices for this question.</p>
+      {% endfor %}
+    </div>
+    
+    
+    <div>
+      <a href="#" class="link-opacity-50-hover text-decoration-none me-3"
+      >{{ question.reactions.filter(reaction='LIKE').count }} Like{{ question.reactions.filter(reaction='LIKE').count|pluralize }}</a
+      >
+      <a href="#" class="link-opacity-50-hover text-decoration-none me-3"
+        >{{ question.reactions.filter(reaction='DISLIKE').count }} Dislike{{ question.reactions.filter(reaction='DISLIKE').count|pluralize }}</a
+      >
+      <a href="#" class="link-opacity-50-hover text-decoration-none me-3"
+        >{{ question.comments.count }} Comment{{ question.comments.count|pluralize }}</a
+      >
+    </div>
+  </div>
+  <!-- Display questions -->
+  {% comment %}
+  <li>{{ question.question }}</li>
+  <li><i>{{ question.pub_date }}</i></li>
+  {% endcomment %}
 
-	<hr/> 
-	<!-- If object_list is empty -->
-	{% empty %} 
-	<li>No questions yet.</li> 
-	{% endfor %} 
-</ul>
+  <!-- If question_list is empty -->
+  {% empty %}
+  <p>No questions yet.</p>
+  {% endfor %}
+</div>
 
 {% endblock %}

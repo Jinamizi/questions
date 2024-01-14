@@ -9,20 +9,20 @@ class Choices(admin.TabularInline):
     fields = ['choice']
     extra = 1
 
-class Comments(GenericStackedInline):
-    model = Comment
-    fields = ['comment']
-    extra = 1
+# class Comments(GenericStackedInline):
+#     model = Comment
+#     fields = ['comment']
+#     extra = 1
+    
 
 
 class QuestionAdmin(admin.ModelAdmin):
-    fieldsets = [
-        (None, {"fields": ["question"]}),
-    ]
-    inlines = [Choices, Comments]
 
-    list_display = ["question", "pub_date", "last_edit"]
+    inlines = [Choices]
+
+    list_display = ["user", "question", "pub_date", "last_edit"]
 
 
 admin.site.register(Question, QuestionAdmin)
+admin.site.register(Comment)
 
